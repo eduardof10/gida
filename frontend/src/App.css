@@ -53,19 +53,25 @@
   scrollbar-width: none;
 }
 
+/* Captures pointer events over tabs while the indicator animates (does not use pointer-events:none on the whole bar, which would let clicks pass through) */
+.tabBarPointerBlocker {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+}
+
 .tabIndicator {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 0;
   height: 2px;
+  border-radius: 9999px;
   opacity: 0;
   background: #000000;
   pointer-events: none;
-  transition:
-    left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.2s ease;
+  /* left/width animated via Web Animations API — avoid CSS transition fighting WAAPI */
+  transition: opacity 0.15s ease;
 }
 
 .tabList::-webkit-scrollbar {
@@ -76,9 +82,9 @@
   text-decoration: none;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: rgba(0, 0, 0, 0.60);
+  color: rgba(0, 0, 0, 0.50);
   font-family: 'Forum', serif;
-  font-weight: 500;
+  font-weight: 300;
   font-style: normal;
   font-size: 14px;
   padding: 10px 14px 12px;
@@ -89,12 +95,13 @@
 }
 
 .tab:hover {
-  font-weight: 600;
+  font-weight: 400;
   color: #000000;
 }
 
 .tab.active {
   color: #000000;
+  font-weight: 400;
 }
 
 .tab:active {

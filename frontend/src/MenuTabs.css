@@ -61,6 +61,8 @@
   /* Total outer width 130px including border + horizontal padding (border-box) */
   --tab-drawer-outer: 130px;
   --tab-drawer-pad-x: 8px;
+  /* Tuned for longest label (e.g. Architecture) in the fixed-width rail */
+  --tab-menu-link-font-size: 9.5px;
   box-sizing: border-box;
   position: fixed;
   top: 0;
@@ -134,24 +136,10 @@
   background: rgba(0, 0, 0, 0.06);
 }
 
-/*
- * Drawer rail is 130px total (border-box). Longest label ~"Architecture" uppercase;
- * font-size derived from remaining line width after border, drawer padding, link padding.
- */
 .tabMenuDrawer .tabMenuLink {
   box-sizing: border-box;
   width: 100%;
   padding: 6px 4px;
   letter-spacing: 0.035em;
-  font-size: max(
-    7px,
-    min(
-      11px,
-      calc(
-        (
-            var(--tab-drawer-outer) - 1px - (2 * var(--tab-drawer-pad-x)) - 8px
-          ) / 10.75
-      )
-    )
-  );
+  font-size: var(--tab-menu-link-font-size);
 }

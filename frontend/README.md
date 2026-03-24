@@ -1,5 +1,11 @@
 # React + TypeScript + Vite
 
+## Breakpoints (layout decisions in JS)
+
+- **[`src/breakpoints.ts`](src/breakpoints.ts)** — `BREAKPOINTS.sm | md | lg | xl` (px). Use **`useBreakpoint()`** in [`src/hooks/useBreakpoint.ts`](src/hooks/useBreakpoint.ts) for `tier` (`'xs' | 'sm' | …`) and `matches` to change layout in components. Edit the numbers in one place only.
+
+---
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

@@ -6,16 +6,91 @@ import {
   useState,
 } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
+import { useMediaQuery } from './hooks/useMediaQuery'
+import './TopTabs.css'
+
+const COMPACT_NAV_QUERY = '(max-width: 1000px)'
+
+const TAB_ITEMS = [
+  { to: '/', end: true as boolean, label: 'About' },
+  { to: '/architecture', end: false, label: 'Architecture' },
+  { to: '/interiors', end: false, label: 'Interiors' },
+  { to: '/designs', end: false, label: 'Designs' },
+  { to: '/contact', end: false, label: 'Contact' },
+] as const
 
 const DURATION_MS = 520
-/** Where along the journey the line is narrowest (earlier = shrink faster, then expand toward the end) */
 const NARROW_AT = 0.36
-/** Narrowest width during travel (px), scales with tab size */
+
 function minTravelWidth(a: number, b: number) {
-  return Math.min(a, b) * 0.30
+  return Math.min(a, b) * 0.3
 }
 
-export default function TopTabs() {
+function CompactNav() {
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [menuOpen])
+
+  return (
+    <div className="tabMenuCompact">
+      <button
+        type="button"
+        className="tabMenuButton"
+        onClick={() => setMenuOpen((o) => !o)}
+        aria-expanded={menuOpen}
+        aria-controls="tab-menu-panel"
+        id="tab-menu-button"
+      >
+        <span className="tabMenuButtonLabel">Menu</span>
+        <span className="tabMenuIcon" aria-hidden>
+          <span />
+          <span />
+          <span />
+        </span>
+      </button>
+      {menuOpen ? (
+        <>
+          <button
+            type="button"
+            className="tabMenuBackdrop"
+            aria-label="Close menu"
+            onClick={() => setMenuOpen(false)}
+          />
+          <div
+            id="tab-menu-panel"
+            className="tabMenuPanel"
+            role="menu"
+            aria-labelledby="tab-menu-button"
+          >
+            {TAB_ITEMS.map(({ to, end, label }) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={end}
+                role="menuitem"
+                className={({ isActive }) =>
+                  isActive ? 'tabMenuLink tabMenuLink--active' : 'tabMenuLink'
+                }
+                onClick={() => setMenuOpen(false)}
+              >
+                {label}
+              </NavLink>
+            ))}
+          </div>
+        </>
+      ) : null}
+    </div>
+  )
+}
+
+function DesktopTabBar() {
   const location = useLocation()
   const tabListRef = useRef<HTMLDivElement>(null)
   const indicatorRef = useRef<HTMLSpanElement>(null)
@@ -56,18 +131,30 @@ export default function TopTabs() {
     }
   }, [])
 
-  const applyStyles = useCallback(
-    (metrics: { left: number; width: number }) => {
-      const el = indicatorRef.current
-      if (!el) return
-      el.style.left = `${metrics.left}px`
-      el.style.width = `${metrics.width}px`
-      el.style.opacity = metrics.width > 0 ? '1' : '0'
+  const placeIndicatorAtTab = useCallback(
+    (el: HTMLElement, tab: { left: number; width: number }) => {
+      el.style.left = `${tab.left}px`
+      el.style.width = `${tab.width}px`
+      el.style.opacity = tab.width > 0 ? '1' : '0'
     },
     [],
   )
 
-  /** Snap to measured tab — no animation (resize, scroll, fonts) */
+  const releaseIndicatorWaapi = useCallback((el: HTMLElement) => {
+    for (const animation of [...el.getAnimations()]) {
+      try {
+        animation.commitStyles?.()
+      } catch {
+        /* ignore */
+      }
+      try {
+        animation.cancel()
+      } catch {
+        /* ignore */
+      }
+    }
+  }, [])
+
   const syncStatic = useCallback(() => {
     const el = indicatorRef.current
     if (!el) return
@@ -75,6 +162,10 @@ export default function TopTabs() {
     animRef.current?.cancel()
     animRef.current = null
     setIsAnimating(false)
+
+    // Finished animations with fill:forwards sit above inline styles, so resize
+    // could not update left/width until the effect is cleared.
+    releaseIndicatorWaapi(el)
 
     const next = measureActiveTab()
     if (!next) {
@@ -84,11 +175,10 @@ export default function TopTabs() {
       return
     }
 
-    applyStyles(next)
+    placeIndicatorAtTab(el, next)
     prevCommittedRef.current = next
-  }, [applyStyles, measureActiveTab])
+  }, [measureActiveTab, placeIndicatorAtTab, releaseIndicatorWaapi])
 
-  /** Route change: shrink while moving, expand at destination */
   const animateToActiveTab = useCallback(() => {
     const el = indicatorRef.current
     if (!el) return
@@ -108,8 +198,8 @@ export default function TopTabs() {
     const fromVisual = measureIndicator()
 
     if (!fromVisual && !prevCommittedRef.current) {
-      applyStyles(next)
       prevCommittedRef.current = next
+      placeIndicatorAtTab(el, next)
       return
     }
 
@@ -118,8 +208,8 @@ export default function TopTabs() {
       Math.abs(start.left - next.left) < 0.5 &&
       Math.abs(start.width - next.width) < 0.5
     ) {
-      applyStyles(next)
       prevCommittedRef.current = next
+      placeIndicatorAtTab(el, next)
       return
     }
 
@@ -130,17 +220,21 @@ export default function TopTabs() {
 
     const animation = el.animate(
       [
-        { left: `${start.left}px`, width: `${start.width}px` },
+        { left: `${start.left}px`, width: `${start.width}px`, opacity: 1 },
         {
           left: `${narrowLeft}px`,
           width: `${minW}px`,
+          opacity: 1,
           offset: NARROW_AT,
         },
-        { left: `${next.left}px`, width: `${next.width}px` },
+        {
+          left: `${next.left}px`,
+          width: `${next.width}px`,
+          opacity: 1,
+        },
       ],
       {
         duration: DURATION_MS,
-        // Ease-in-out so the “expand” at the end feels deliberate
         easing: 'cubic-bezier(0.55, 0.05, 0.2, 1)',
         fill: 'forwards',
       },
@@ -152,24 +246,37 @@ export default function TopTabs() {
       if (animRef.current !== animation) return
       animRef.current = null
       setIsAnimating(false)
-      applyStyles(next)
       prevCommittedRef.current = next
+      try {
+        animation.commitStyles?.()
+      } catch {
+        /* ignore */
+      }
+      try {
+        animation.cancel()
+      } catch {
+        /* ignore */
+      }
+      placeIndicatorAtTab(el, next)
     }
 
     animation.oncancel = () => {
       if (animRef.current !== animation) return
       animRef.current = null
       setIsAnimating(false)
+      const tab = measureActiveTab()
+      if (tab) {
+        prevCommittedRef.current = tab
+        placeIndicatorAtTab(el, tab)
+      }
     }
-  }, [applyStyles, measureActiveTab, measureIndicator])
+  }, [measureActiveTab, measureIndicator, placeIndicatorAtTab])
 
   useLayoutEffect(() => {
-    // Tab lock + WAAPI run in the layout phase with the route update.
     // eslint-disable-next-line react-hooks/set-state-in-effect -- animateToActiveTab sets isAnimating for the pointer blocker
     animateToActiveTab()
   }, [location.pathname, animateToActiveTab])
 
-  /* After paint so ResizeObserver doesn’t cancel the route animation on the same frame */
   useEffect(() => {
     const list = tabListRef.current
     if (!list) return
@@ -192,59 +299,46 @@ export default function TopTabs() {
   }, [syncStatic])
 
   return (
-    <nav className="topTabs" aria-label="Primary" aria-busy={isAnimating}>
-      <div className="topTabsInner">
-        <div
-          ref={tabListRef}
-          className="tabList"
-          role="tablist"
-          aria-label="Sections"
+    <div
+      ref={tabListRef}
+      className="tabList tabList--desktop"
+      role="tablist"
+      aria-label="Sections"
+      aria-busy={isAnimating}
+    >
+      <span ref={indicatorRef} className="tabIndicator" aria-hidden />
+      {TAB_ITEMS.map(({ to, end, label }) => (
+        <NavLink
+          key={to}
+          to={to}
+          end={end}
+          role="tab"
+          className={({ isActive }) => (isActive ? 'tab active' : 'tab')}
         >
-          <span ref={indicatorRef} className="tabIndicator" aria-hidden />
-          <NavLink
-            to="/"
-            end
-            role="tab"
-            className={({ isActive }) => (isActive ? 'tab active' : 'tab')}
-          >
-            About
-          </NavLink>
+          {label}
+        </NavLink>
+      ))}
+      {isAnimating ? (
+        <div className="tabBarPointerBlocker" aria-hidden />
+      ) : null}
+    </div>
+  )
+}
 
-          <NavLink
-            to="/architecture"
-            role="tab"
-            className={({ isActive }) => (isActive ? 'tab active' : 'tab')}
-          >
-            Architecture
-          </NavLink>
+export default function TopTabs() {
+  const isCompactNav = useMediaQuery(COMPACT_NAV_QUERY)
+  const { pathname } = useLocation()
 
-          <NavLink
-            to="/interiors"
-            role="tab"
-            className={({ isActive }) => (isActive ? 'tab active' : 'tab')}
-          >
-            Interiors
-          </NavLink>
-
-          <NavLink
-            to="/designs"
-            role="tab"
-            className={({ isActive }) => (isActive ? 'tab active' : 'tab')}
-          >
-            Designs
-          </NavLink>
-
-          <NavLink
-            to="/contact"
-            role="tab"
-            className={({ isActive }) => (isActive ? 'tab active' : 'tab')}
-          >
-            Contact
-          </NavLink>
-          {isAnimating ? (
-            <div className="tabBarPointerBlocker" aria-hidden />
-          ) : null}
-        </div>
+  return (
+    <nav className="topTabs" aria-label="Primary">
+      <div
+        className={`topTabsInner${isCompactNav ? ' topTabsInner--compact' : ''}`}
+      >
+        {isCompactNav ? (
+          <CompactNav key={pathname} />
+        ) : (
+          <DesktopTabBar />
+        )}
       </div>
     </nav>
   )

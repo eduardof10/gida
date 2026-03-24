@@ -1,0 +1,194 @@
+.topTabs {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #ffffff;
+}
+
+.topTabsInner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 14px;
+}
+
+.topTabsInner--compact {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 52px;
+}
+
+/* Expandable menu — viewports under 700px (see TopTabs COMPACT_NAV_QUERY) */
+.tabMenuCompact {
+  position: relative;
+  z-index: 60;
+}
+
+.tabMenuButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin: 0;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  background: #ffffff;
+  color: #000000;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.tabMenuButton:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.tabMenuButtonLabel {
+  display: none;
+}
+
+@media (min-width: 380px) {
+  .tabMenuButtonLabel {
+    display: inline;
+  }
+}
+
+.tabMenuIcon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 22px;
+}
+
+.tabMenuIcon span {
+  display: block;
+  height: 2px;
+  background: #000000;
+  border-radius: 1px;
+}
+
+.tabMenuBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 58;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.tabMenuPanel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: auto;
+  z-index: 59;
+  min-width: min(240px, calc(100vw - 28px));
+  padding: 8px 0;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.tabMenuLink {
+  display: block;
+  padding: 12px 18px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(0, 0, 0, 0.55);
+  transition:
+    background 0.12s ease,
+    color 0.12s ease;
+}
+
+.tabMenuLink:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #000000;
+}
+
+.tabMenuLink--active {
+  font-weight: 500;
+  color: #000000;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.tabList {
+  position: relative;
+  display: flex;
+  gap: 30px;
+  align-items: flex-end;
+  justify-content: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+/* matches BREAKPOINTS.lg in breakpoints.ts */
+@media (min-width: 1400px) {
+  .tabList {
+    gap: 70px;
+  }
+}
+
+.tabBarPointerBlocker {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+}
+
+.tabIndicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  border-radius: 9999px;
+  opacity: 0;
+  background: #000000;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.tabList::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 300;
+  font-style: normal;
+  font-size: 14px;
+  padding: 10px 14px 12px;
+  border: 1px solid transparent;
+  position: relative;
+  overflow: visible;
+  transition: font-weight 120ms ease, color 120ms ease;
+}
+
+.tab:hover {
+  font-weight: 400;
+  color: #000000;
+}
+
+.tab.active {
+  color: #000000;
+  font-weight: 400;
+}
+
+.tab:active {
+  transform: translateY(1px);
+}

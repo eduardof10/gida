@@ -4,6 +4,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  type TransitionEvent,
 } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useMediaQuery } from './hooks/useMediaQuery'
@@ -28,6 +29,34 @@ function minTravelWidth(a: number, b: number) {
 
 function CompactNav() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [drawerMounted, setDrawerMounted] = useState(false)
+  const [drawerEntered, setDrawerEntered] = useState(false)
+
+  useEffect(() => {
+    if (menuOpen) {
+      setDrawerMounted(true)
+      let cancelled = false
+      const id = requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (!cancelled) setDrawerEntered(true)
+        })
+      })
+      return () => {
+        cancelled = true
+        cancelAnimationFrame(id)
+      }
+    }
+    setDrawerEntered(false)
+  }, [menuOpen])
+
+  useEffect(() => {
+    if (!drawerMounted) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prev
+    }
+  }, [drawerMounted])
 
   useEffect(() => {
     if (!menuOpen) return
@@ -38,6 +67,11 @@ function CompactNav() {
     return () => window.removeEventListener('keydown', onKey)
   }, [menuOpen])
 
+  const onDrawerTransitionEnd = (e: TransitionEvent<HTMLDivElement>) => {
+    if (e.propertyName !== 'transform') return
+    if (!menuOpen) setDrawerMounted(false)
+  }
+
   return (
     <div className="tabMenuCompact">
       <button
@@ -46,43 +80,45 @@ function CompactNav() {
         onClick={() => setMenuOpen((o) => !o)}
         aria-expanded={menuOpen}
         aria-controls="tab-menu-panel"
+        aria-label={menuOpen ? 'Close menu' : 'Open menu'}
         id="tab-menu-button"
       >
-        <span className="tabMenuButtonLabel">Menu</span>
         <span className="tabMenuIcon" aria-hidden>
           <span />
           <span />
           <span />
         </span>
       </button>
-      {menuOpen ? (
+      {drawerMounted ? (
         <>
           <button
             type="button"
-            className="tabMenuBackdrop"
+            className={`tabMenuBackdrop${drawerEntered ? ' tabMenuBackdrop--visible' : ''}`}
             aria-label="Close menu"
             onClick={() => setMenuOpen(false)}
           />
           <div
             id="tab-menu-panel"
-            className="tabMenuPanel"
-            role="menu"
-            aria-labelledby="tab-menu-button"
+            className={`tabMenuDrawer${drawerEntered ? ' tabMenuDrawer--open' : ''}`}
+            role="navigation"
+            aria-label="Sections"
+            onTransitionEnd={onDrawerTransitionEnd}
           >
-            {TAB_ITEMS.map(({ to, end, label }) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={end}
-                role="menuitem"
-                className={({ isActive }) =>
-                  isActive ? 'tabMenuLink tabMenuLink--active' : 'tabMenuLink'
-                }
-                onClick={() => setMenuOpen(false)}
-              >
-                {label}
-              </NavLink>
-            ))}
+            <div className="tabMenuDrawerInner">
+              {TAB_ITEMS.map(({ to, end, label }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={end}
+                  className={({ isActive }) =>
+                    isActive ? 'tabMenuLink tabMenuLink--active' : 'tabMenuLink'
+                  }
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {label}
+                </NavLink>
+              ))}
+            </div>
           </div>
         </>
       ) : null}

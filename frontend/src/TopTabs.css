@@ -27,36 +27,20 @@
 .tabMenuButton {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+  justify-content: center;
+  padding: 10px;
   margin: 0;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 8px;
-  background: #ffffff;
+  border: none;
+  border-radius: 0;
+  background: transparent;
   color: #000000;
-  font-size: 14px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
   cursor: pointer;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease;
+  box-shadow: none;
+  transition: opacity 0.15s ease;
 }
 
 .tabMenuButton:hover {
-  background: rgba(0, 0, 0, 0.04);
-  border-color: rgba(0, 0, 0, 0.2);
-}
-
-.tabMenuButtonLabel {
-  display: none;
-}
-
-@media (min-width: 380px) {
-  .tabMenuButtonLabel {
-    display: inline;
-  }
+  opacity: 0.65;
 }
 
 .tabMenuIcon {
@@ -77,31 +61,77 @@
 .tabMenuBackdrop {
   position: fixed;
   inset: 0;
-  z-index: 58;
+  z-index: 100;
   margin: 0;
   padding: 0;
   border: none;
   background: rgba(0, 0, 0, 0.2);
   cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.38s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-.tabMenuPanel {
-  position: absolute;
-  top: calc(100% + 8px);
+.tabMenuBackdrop--visible {
+  opacity: 1;
+}
+
+.tabMenuDrawer {
+  --tab-drawer-ms: 0.38s;
+  --tab-drawer-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  /* Total outer width 130px including border + horizontal padding (border-box) */
+  --tab-drawer-outer: 130px;
+  --tab-drawer-pad-x: 8px;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
   left: 0;
-  right: auto;
-  z-index: 59;
-  min-width: min(240px, calc(100vw - 28px));
-  padding: 8px 0;
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  width: var(--tab-drawer-outer);
+  max-width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  padding-top: env(safe-area-inset-top, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-left: var(--tab-drawer-pad-x);
+  padding-right: var(--tab-drawer-pad-x);
   background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  border: none;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: none;
+  transform: translateX(-100%);
+  transition: transform var(--tab-drawer-ms) var(--tab-drawer-ease);
+}
+
+.tabMenuDrawer--open {
+  transform: translateX(0);
+}
+
+.tabMenuDrawerInner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 16px 0 24px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabMenuBackdrop {
+    transition-duration: 0.01ms;
+  }
+
+  .tabMenuDrawer {
+    --tab-drawer-ms: 0.01ms;
+  }
 }
 
 .tabMenuLink {
   display: block;
-  padding: 12px 18px;
+  padding: 14px 28px;
   text-decoration: none;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -122,6 +152,28 @@
   font-weight: 500;
   color: #000000;
   background: rgba(0, 0, 0, 0.06);
+}
+
+/*
+ * Drawer rail is 130px total (border-box). Longest label ~"Architecture" uppercase;
+ * font-size derived from remaining line width after border, drawer padding, link padding.
+ */
+.tabMenuDrawer .tabMenuLink {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 6px 4px;
+  letter-spacing: 0.035em;
+  font-size: max(
+    7px,
+    min(
+      11px,
+      calc(
+        (
+            var(--tab-drawer-outer) - 1px - (2 * var(--tab-drawer-pad-x)) - 8px
+          ) / 10.75
+      )
+    )
+  );
 }
 
 .tabList {

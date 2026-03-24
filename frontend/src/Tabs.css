@@ -1,0 +1,19 @@
+.topTabs {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #ffffff;
+}
+
+.topTabsInner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 14px;
+}
+
+.topTabsInner--compact {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 52px;
+}

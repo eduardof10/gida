@@ -4,21 +4,10 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-  type TransitionEvent,
 } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { useMediaQuery } from './hooks/useMediaQuery'
+import { TAB_ITEMS } from './tabNavItems'
 import './TopTabs.css'
-
-const COMPACT_NAV_QUERY = '(max-width: 1000px)'
-
-const TAB_ITEMS = [
-  { to: '/', end: true as boolean, label: 'About' },
-  { to: '/architecture', end: false, label: 'Architecture' },
-  { to: '/interiors', end: false, label: 'Interiors' },
-  { to: '/designs', end: false, label: 'Designs' },
-  { to: '/contact', end: false, label: 'Contact' },
-] as const
 
 const DURATION_MS = 520
 const NARROW_AT = 0.36
@@ -27,106 +16,7 @@ function minTravelWidth(a: number, b: number) {
   return Math.min(a, b) * 0.3
 }
 
-function CompactNav() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [drawerMounted, setDrawerMounted] = useState(false)
-  const [drawerEntered, setDrawerEntered] = useState(false)
-
-  useEffect(() => {
-    if (menuOpen) {
-      setDrawerMounted(true)
-      let cancelled = false
-      const id = requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          if (!cancelled) setDrawerEntered(true)
-        })
-      })
-      return () => {
-        cancelled = true
-        cancelAnimationFrame(id)
-      }
-    }
-    setDrawerEntered(false)
-  }, [menuOpen])
-
-  useEffect(() => {
-    if (!drawerMounted) return
-    const prev = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = prev
-    }
-  }, [drawerMounted])
-
-  useEffect(() => {
-    if (!menuOpen) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMenuOpen(false)
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [menuOpen])
-
-  const onDrawerTransitionEnd = (e: TransitionEvent<HTMLDivElement>) => {
-    if (e.propertyName !== 'transform') return
-    if (!menuOpen) setDrawerMounted(false)
-  }
-
-  return (
-    <div className="tabMenuCompact">
-      <button
-        type="button"
-        className="tabMenuButton"
-        onClick={() => setMenuOpen((o) => !o)}
-        aria-expanded={menuOpen}
-        aria-controls="tab-menu-panel"
-        aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-        id="tab-menu-button"
-      >
-        <span className="tabMenuIcon" aria-hidden>
-          <span />
-          <span />
-          <span />
-        </span>
-      </button>
-      {drawerMounted ? (
-        <>
-          <button
-            type="button"
-            className={`tabMenuBackdrop${drawerEntered ? ' tabMenuBackdrop--visible' : ''}`}
-            aria-label="Close menu"
-            onClick={() => setMenuOpen(false)}
-          />
-          <div
-            id="tab-menu-panel"
-            className={`tabMenuDrawer${drawerEntered ? ' tabMenuDrawer--open' : ''}`}
-            role="navigation"
-            aria-label="Sections"
-            onTransitionEnd={onDrawerTransitionEnd}
-          >
-            <div className="tabMenuDrawerInner">
-              {TAB_ITEMS.map(({ to, end, label }) => (
-                <NavLink
-                  key={to}
-                  to={to}
-                  end={end}
-                  className={({ isActive }) =>
-                    isActive ? 'tabMenuLink tabMenuLink--active' : 'tabMenuLink'
-                  }
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {label}
-                </NavLink>
-              ))}
-            </div>
-          </div>
-        </>
-      ) : null}
-    </div>
-  )
-}
-
-function DesktopTabBar() {
+export default function TopTabs() {
   const location = useLocation()
   const tabListRef = useRef<HTMLDivElement>(null)
   const indicatorRef = useRef<HTMLSpanElement>(null)
@@ -358,24 +248,5 @@ function DesktopTabBar() {
         <div className="tabBarPointerBlocker" aria-hidden />
       ) : null}
     </div>
-  )
-}
-
-export default function TopTabs() {
-  const isCompactNav = useMediaQuery(COMPACT_NAV_QUERY)
-  const { pathname } = useLocation()
-
-  return (
-    <nav className="topTabs" aria-label="Primary">
-      <div
-        className={`topTabsInner${isCompactNav ? ' topTabsInner--compact' : ''}`}
-      >
-        {isCompactNav ? (
-          <CompactNav key={pathname} />
-        ) : (
-          <DesktopTabBar />
-        )}
-      </div>
-    </nav>
   )
 }

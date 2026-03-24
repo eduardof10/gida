@@ -1,6 +1,6 @@
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
-import TopTabs from './TopTabs.tsx'
+import Tabs from './Tabs.tsx'
 import About from './pages/About.tsx'
 import Architecture from './pages/Architecture.tsx'
 import Interiors from './pages/Interiors.tsx'
@@ -10,7 +10,7 @@ import Contact from './pages/Contact.tsx'
 function App() {
   return (
     <div className="appLayout">
-      <TopTabs />
+      <Tabs />
       <main className="pageContent">
         <Routes>
           <Route path="/" element={<About />} />

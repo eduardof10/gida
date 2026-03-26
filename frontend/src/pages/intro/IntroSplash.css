@@ -1,0 +1,99 @@
+.introSplash {
+  --intro-slide-ms: 2200ms;
+  --intro-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  z-index: 2147483646;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 24px;
+  box-sizing: border-box;
+  background: #000000;
+  color: #ffffff;
+  transform: translate3d(0, 0, 0);
+  transition-property: transform;
+  transition-duration: 0s;
+  pointer-events: auto;
+}
+
+.introSplash.introSplash--exit {
+  transform: translate3d(0, -100%, 0);
+  transition-duration: var(--intro-slide-ms);
+  transition-timing-function: var(--intro-ease);
+}
+
+.introSplash__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: clamp(10px, 2.5vh, 24px);
+  width: min(92vw, 360px);
+  max-width: 100%;
+}
+
+.introSplash__logo {
+  display: block;
+  width: min(42vw, 160px);
+  height: auto;
+  max-height: min(35vh, 180px);
+  object-fit: contain;
+  /* app_icon.svg line art is black — invert for contrast on black splash */
+  filter: invert(1);
+}
+
+.introSplash__diaz {
+  display: block;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto Serif', serif;
+  font-size: clamp(1.75rem, 7vw, 3.25rem);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  text-indent: 0.42em;
+  color: #ffffff;
+}
+
+.introSplash__tagline {
+  display: block;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto Serif', serif;
+  font-size: clamp(0.65rem, 2vw, 0.8125rem);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  text-indent: 0.32em;
+  color: #ffffff;
+}
+
+.introSplash__srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .introSplash.introSplash--exit {
+    /* Short but visible on refresh with reduced motion */
+    --intro-slide-ms: 380ms;
+  }
+}

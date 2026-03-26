@@ -1,8 +1,8 @@
 import { useLocation } from 'react-router-dom'
-import { useMediaQuery } from './hooks/useMediaQuery'
+import { useMediaQuery } from '../../hooks/useMediaQuery.ts'
 import MenuTabs from './MenuTabs.tsx'
 import TopTabs from './TopTabs.tsx'
-import { COMPACT_NAV_QUERY } from './tabNavItems'
+import { COMPACT_NAV_QUERY } from './TabNavItems.ts'
 import './Tabs.css'
 
 export default function Tabs() {

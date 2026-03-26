@@ -6,7 +6,7 @@ import {
   useState,
 } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { TAB_ITEMS } from './tabNavItems'
+import { TAB_ITEMS } from './TabNavItems'
 import './TopTabs.css'
 
 const DURATION_MS = 520

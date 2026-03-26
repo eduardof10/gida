@@ -1,6 +1,6 @@
 import { useEffect, useState, type TransitionEvent } from 'react'
 import { NavLink } from 'react-router-dom'
-import { TAB_ITEMS } from './tabNavItems'
+import { TAB_ITEMS } from './TabNavItems'
 import './MenuTabs.css'
 
 export default function MenuTabs() {

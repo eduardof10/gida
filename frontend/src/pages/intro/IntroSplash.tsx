@@ -88,8 +88,10 @@ export default function IntroSplash() {
           decoding="async"
           fetchPriority="high"
         />
-        <span className="introSplash__diaz">DIAZ</span>
-        <span className="introSplash__tagline">ARCHITECTS</span>
+        <div className="introSplash__copy">
+          <span className="introSplash__diaz">DIAZ</span>
+          <span className="introSplash__tagline">ARCHITECTS</span>
+        </div>
       </div>
     </div>,
     document.body,

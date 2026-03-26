@@ -41,6 +41,24 @@
   max-width: 100%;
 }
 
+/* Fades out in lockstep with the black screen slide (--intro-slide-ms / --intro-ease) */
+.introSplash__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(10px, 2.5vh, 24px);
+  opacity: 1;
+  transition-property: opacity;
+  transition-duration: 0s;
+}
+
+.introSplash.introSplash--exit .introSplash__copy {
+  opacity: 0;
+  transition-duration: var(--intro-slide-ms);
+  transition-timing-function: var(--intro-ease);
+}
+
 .introSplash__logo {
   display: block;
   width: min(42vw, 160px);

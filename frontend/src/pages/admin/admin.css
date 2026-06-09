@@ -1,0 +1,212 @@
+.adminPage {
+  max-width: 720px;
+}
+
+.adminMuted {
+  margin: 0;
+  opacity: 0.75;
+  font-size: 0.95rem;
+}
+
+.adminToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.adminForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.adminLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.adminLabelInline {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.adminInput,
+.adminTextarea {
+  font: inherit;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 6px;
+  background: #fff;
+  color: inherit;
+}
+
+.adminTextarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.adminTextareaSm {
+  min-height: 60px;
+  font-size: 0.9rem;
+}
+
+.adminButton {
+  align-self: flex-start;
+  padding: 10px 18px;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  background: #111;
+  color: #fff;
+}
+
+.adminButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.adminButtonSecondary {
+  text-decoration: none;
+  display: inline-block;
+  background: transparent;
+  color: #111;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.adminButtonLink {
+  text-decoration: none;
+  text-align: center;
+}
+
+.adminButtonSmall {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+.adminButtonDanger {
+  background: #8b2942;
+}
+
+.adminError {
+  margin: 0;
+  color: #8b2942;
+  font-size: 0.9rem;
+}
+
+.adminFooterLink {
+  margin-top: 32px;
+  font-size: 0.95rem;
+}
+
+.adminFooterLink a {
+  color: inherit;
+  opacity: 0.75;
+}
+
+.adminList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.adminListItem {
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.adminListLink {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.12s ease;
+}
+
+.adminListLink:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.adminListTitle {
+  font-weight: 500;
+}
+
+.adminListMeta {
+  font-size: 0.85rem;
+  opacity: 0.65;
+}
+
+.adminSection {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.adminHeading {
+  margin: 0 0 12px;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.adminMediaList {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.adminMediaItem {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.adminMediaThumb {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.adminMediaBody {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.adminCode {
+  font-size: 0.75rem;
+  word-break: break-all;
+  opacity: 0.7;
+}
+
+.adminMediaActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

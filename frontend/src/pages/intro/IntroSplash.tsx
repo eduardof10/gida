@@ -26,7 +26,9 @@ export default function IntroSplash() {
     setMounted(false)
   }, [])
 
-  exitingRef.current = exiting
+  useEffect(() => {
+    exitingRef.current = exiting
+  }, [exiting])
 
   const onTransitionEnd = useCallback(
     (e: TransitionEvent<HTMLDivElement>) => {

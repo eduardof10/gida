@@ -1,9 +1,5 @@
 :root {
-  font-family: 'Roboto Serif', serif;
-  font-optical-sizing: auto;
-  font-variation-settings:
-    'wdth' 100,
-    'GRAD' 0;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light;
@@ -17,18 +13,4 @@
 
 body {
   margin: 0;
-}
-
-/**
- * Roboto Serif variable font — set font-weight (100–900) per use.
- * Example: class="roboto-serif roboto-serif--emphasis" + .roboto-serif--emphasis { font-weight: 600; }
- */
-.roboto-serif {
-  font-family: 'Roboto Serif', serif;
-  font-optical-sizing: auto;
-  font-style: normal;
-  font-weight: 400;
-  font-variation-settings:
-    'wdth' 100,
-    'GRAD' 0;
 }

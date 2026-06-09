@@ -10,6 +10,7 @@ export default function MenuTabs() {
 
   useEffect(() => {
     if (menuOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- mount drawer before open transition
       setDrawerMounted(true)
       let cancelled = false
       const id = requestAnimationFrame(() => {
